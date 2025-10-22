@@ -1,0 +1,97 @@
+using System;
+using UnityEngine;
+
+public class Player : MonoBehaviour {
+
+  private Animator anim;
+  private Rigidbody2D rb;
+
+  [Header("Movement Details")]
+  [SerializeField] private float moveSpeed = 3.5f;
+  [SerializeField] private float jumpForce = 7f;
+  private float xInput;
+  private bool facingRight = true;
+  private bool canMove = true;
+  private bool canJump = true;
+
+  [Header("Collision Details")]
+  [SerializeField] private float groundCheckDistance = 0.1f;
+  [SerializeField] private LayerMask whatIsGround;
+  private bool isGrounded;
+
+
+  private void Awake() {
+    rb = GetComponent<Rigidbody2D>();
+    anim = GetComponentInChildren<Animator>();
+  }
+
+  private void Update() {
+    HandleCollision();
+    HandleInput();
+    HandleMovement();
+    HandleAnimations();
+    HandleFlip();
+  }
+
+  public void EnableMovementAndJump(bool enable) {
+    canMove = enable;
+    canJump = enable; 
+  }
+
+  private void HandleAnimations() {
+    anim.SetFloat("xVelocity", rb.linearVelocity.x);
+    anim.SetBool("isGrounded", isGrounded);
+    anim.SetFloat("yVelocity", rb.linearVelocity.y);
+  }
+
+  private void HandleInput() {
+    xInput = Input.GetAxisRaw("Horizontal");
+
+    if (Input.GetKeyDown(KeyCode.Space)) {
+      TryToJump();
+    }
+
+    if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.X)) {
+      TryToAttack();
+    }
+  }
+
+  private void TryToAttack() {
+    if (isGrounded) {
+      anim.SetTrigger("attack");
+      rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+    }
+  }
+
+  private void HandleMovement() {
+    if(canMove)
+      rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);
+  }
+
+  private void TryToJump() {
+    if(isGrounded && canJump)
+      rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+  }
+
+  private void HandleCollision() {
+    isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
+
+  }
+
+  private void HandleFlip() {
+    if (rb.linearVelocity.x > 0 && facingRight == false) {
+      Flip();
+    } else if (rb.linearVelocity.x < 0 && facingRight == true) {
+      Flip();
+    }
+  }
+
+  private void Flip() {
+    transform.Rotate(0, 180, 0);
+    facingRight = !facingRight;
+  }
+
+  private void OnDrawGizmos() {
+    Gizmos.DrawLine(transform.position, transform.position + new Vector3(0, -groundCheckDistance));
+  }
+}
