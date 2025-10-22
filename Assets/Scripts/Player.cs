@@ -59,13 +59,14 @@ public class Player : MonoBehaviour {
   private void TryToAttack() {
     if (isGrounded) {
       anim.SetTrigger("attack");
-      rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
   }
 
   private void HandleMovement() {
-    if(canMove)
+    if (canMove)
       rb.linearVelocity = new Vector2(xInput * moveSpeed, rb.linearVelocity.y);
+    else
+      rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
   }
 
   private void TryToJump() {
