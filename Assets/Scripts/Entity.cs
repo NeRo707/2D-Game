@@ -6,6 +6,11 @@ public class Entity : MonoBehaviour {
 
   protected Animator anim;
   protected Rigidbody2D rb;
+  protected Collider2D col;
+
+  [Header("Health Details")]
+  [SerializeField] protected int maxHealth = 1;
+  [SerializeField] protected int currentHealth;
 
   [Header("Attack Details")]
   [SerializeField] protected float attackRadius = 0.5f;
@@ -29,7 +34,9 @@ public class Entity : MonoBehaviour {
 
   private void Awake() {
     rb = GetComponent<Rigidbody2D>();
+    col = GetComponent<Collider2D>();
     anim = GetComponentInChildren<Animator>();
+    currentHealth = maxHealth;
   }
 
   protected virtual void Update() {
@@ -50,7 +57,20 @@ public class Entity : MonoBehaviour {
     }
   }
 
-  private void TakeDamage(int v) => throw new NotImplementedException();
+  private void TakeDamage(int v) {
+    currentHealth -= v;
+    if (currentHealth <= 0) {
+      Die();
+    }
+  }
+
+  private void Die() {
+    anim.enabled = false;
+    col.enabled = false;
+
+    rb.gravityScale = 12;
+    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 15);
+  }
 
   public void EnableMovementAndJump(bool enable) {
     canMove = enable;
