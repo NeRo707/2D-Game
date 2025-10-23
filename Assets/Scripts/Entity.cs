@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class Entity : MonoBehaviour {
@@ -7,10 +6,14 @@ public class Entity : MonoBehaviour {
   protected Animator anim;
   protected Rigidbody2D rb;
   protected Collider2D col;
+  protected SpriteRenderer sr;
 
   [Header("Health Details")]
   [SerializeField] protected int maxHealth = 1;
   [SerializeField] protected int currentHealth;
+  [SerializeField] private Material damageMaterial;
+  [SerializeField] private float damageFeedbackDuration = .2f;
+  private Coroutine damageFeedbackCoroutine;
 
   [Header("Attack Details")]
   [SerializeField] protected float attackRadius = 0.5f;
@@ -36,6 +39,7 @@ public class Entity : MonoBehaviour {
     rb = GetComponent<Rigidbody2D>();
     col = GetComponent<Collider2D>();
     anim = GetComponentInChildren<Animator>();
+    sr = GetComponentInChildren<SpriteRenderer>();
     currentHealth = maxHealth;
   }
 
@@ -59,9 +63,23 @@ public class Entity : MonoBehaviour {
 
   private void TakeDamage(int v) {
     currentHealth -= v;
+    PlayDamageFeedback();
     if (currentHealth <= 0) {
       Die();
     }
+  }
+
+  private void PlayDamageFeedback() {
+    if (damageFeedbackCoroutine != null)
+      StopCoroutine(damageFeedbackCoroutine);
+    damageFeedbackCoroutine = StartCoroutine(DamageFeedbackCoroutine());
+  }
+
+  private IEnumerator DamageFeedbackCoroutine() {
+    Material originalMaterial = sr.material;
+    sr.material = damageMaterial;
+    yield return new WaitForSeconds(damageFeedbackDuration);
+    sr.material = originalMaterial;
   }
 
   private void Die() {
