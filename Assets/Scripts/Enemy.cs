@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class Enemy : Entity {
 
+  [Header("Movement Details")]
+  [SerializeField] protected float moveSpeed = 3.5f;
+
   private bool playerDetected;
 
   protected override void Update() {
-    HandleCollision();
-    HandleAnimations();
-    HandleMovement();
-    HandleFlip();
-    HandleAttack();
+    base.Update();
 
+    HandleAttack();
     Debug.Log(playerDetected);
   }
 
