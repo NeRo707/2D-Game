@@ -19,6 +19,7 @@ public class Entity : MonoBehaviour {
   [SerializeField] protected float attackRadius = 0.5f;
   [SerializeField] protected Transform attackPoint;
   [SerializeField] protected LayerMask whatIsTarget;
+  [SerializeField] protected int attackDamage = 1;
 
   [Header("Collision Details")]
   [SerializeField] private float groundCheckDistance = 0.1f;
@@ -34,6 +35,7 @@ public class Entity : MonoBehaviour {
     col = GetComponent<Collider2D>();
     anim = GetComponentInChildren<Animator>();
     sr = GetComponentInChildren<SpriteRenderer>();
+
     currentHealth = maxHealth;
   }
 
@@ -49,7 +51,7 @@ public class Entity : MonoBehaviour {
 
     foreach (Collider2D enemy in enemyColliders) {
       Entity entityTarget = enemy.GetComponent<Entity>();
-      entityTarget.TakeDamage(1);
+      entityTarget.TakeDamage(attackDamage);
 
     }
   }
@@ -75,7 +77,7 @@ public class Entity : MonoBehaviour {
     sr.material = originalMaterial;
   }
 
-  private void Die() {
+  protected virtual void Die() {
     anim.enabled = false;
     col.enabled = false;
 
