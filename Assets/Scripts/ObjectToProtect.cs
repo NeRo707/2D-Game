@@ -15,7 +15,6 @@ public class ObjectToProtect : Entity {
   }
 
   protected override void HandleFlip() {
-
     if (player == null) return;
 
     if (player.transform.position.x > transform.position.x && facingRight == false) {

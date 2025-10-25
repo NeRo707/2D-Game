@@ -11,7 +11,7 @@ public class Enemy : Entity {
     base.Update();
 
     HandleAttack();
-    Debug.Log(playerDetected);
+    // Debug.Log(playerDetected);
   }
 
   protected override void HandleAttack() {
