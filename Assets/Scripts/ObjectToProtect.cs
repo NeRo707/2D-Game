@@ -16,12 +16,17 @@ public class ObjectToProtect : Entity {
 
   protected override void HandleFlip() {
 
-    if(player == null) return;
+    if (player == null) return;
 
     if (player.transform.position.x > transform.position.x && facingRight == false) {
       Flip();
     } else if (player.transform.position.x < transform.position.x && facingRight == true) {
       Flip();
     }
+  }
+
+  protected override void Die() {
+    base.Die();
+    UI.instance.ShowGameOverUI();
   }
 }
