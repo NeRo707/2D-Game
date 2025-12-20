@@ -13,6 +13,7 @@ public class Entity : MonoBehaviour {
   [SerializeField] protected int currentHealth;
   [SerializeField] private Material damageMaterial;
   [SerializeField] private float damageFeedbackDuration = .1f;
+  [SerializeField] HealthBar healthBar;
   private Coroutine damageFeedbackCoroutine;
 
   [Header("Attack Details")]
@@ -35,6 +36,7 @@ public class Entity : MonoBehaviour {
     col = GetComponent<Collider2D>();
     anim = GetComponentInChildren<Animator>();
     sr = GetComponentInChildren<SpriteRenderer>();
+    healthBar = GetComponentInChildren<HealthBar>();
 
     currentHealth = maxHealth;
   }
@@ -58,6 +60,8 @@ public class Entity : MonoBehaviour {
 
   private void TakeDamage(int v) {
     currentHealth -= v;
+    if (healthBar != null)
+      healthBar.updateHealthBar(currentHealth, maxHealth);
     PlayDamageFeedback();
     if (currentHealth <= 0) {
       Die();

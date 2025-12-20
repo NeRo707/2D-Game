@@ -4,6 +4,7 @@ public class Enemy : Entity {
 
   [Header("Movement Details")]
   [SerializeField] protected float moveSpeed = 3.5f;
+  [SerializeField] protected 
 
   private bool playerDetected;
 
